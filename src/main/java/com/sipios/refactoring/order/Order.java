@@ -39,8 +39,8 @@ public final class Order {
         if (isWithinDiscountPeriod(currentDate, Month.JANUARY)
             || isWithinDiscountPeriod(currentDate, Month.JUNE)) {
             return new ProductRebater(List.of(
-                new ProductRebate("JACKET", 0.9),
-                new ProductRebate("DRESS", 0.8)
+                new ProductRebate(new ProductName("JACKET"), 0.9),
+                new ProductRebate(new ProductName("DRESS"), 0.8)
             ));
         }
         return new ProductRebater();

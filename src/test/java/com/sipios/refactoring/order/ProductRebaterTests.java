@@ -14,7 +14,7 @@ class ProductRebaterTests {
             new ProductRebate("DRESS", 0.8)
         ));
 
-        double price = productRebater.applyRebates("JACKET", 100);
+        double price = productRebater.applyRebates(new ProductName("JACKET"), 100);
         Assertions.assertThat(price).isEqualTo(90);
     }
 
@@ -25,7 +25,7 @@ class ProductRebaterTests {
             new ProductRebate("DRESS", 0.8)
         ));
 
-        double price = productRebater.applyRebates("DRESS", 360);
+        double price = productRebater.applyRebates(new ProductName("DRESS"), 360);
         Assertions.assertThat(price).isEqualTo(288.0);
     }
 
@@ -36,7 +36,7 @@ class ProductRebaterTests {
             new ProductRebate("DRESS", 0.8)
         ));
 
-        double price = productRebater.applyRebates("TSHIRT", 39);
+        double price = productRebater.applyRebates(new ProductName("TSHIRT"), 39);
         Assertions.assertThat(price).isEqualTo(39);
     }
 
@@ -44,7 +44,7 @@ class ProductRebaterTests {
     void shouldIgnoreRebateForEmptyRebater() {
         ProductRebater productRebater = new ProductRebater();
 
-        double price = productRebater.applyRebates("TSHIRT", 19);
+        double price = productRebater.applyRebates(new ProductName("TSHIRT"), 19);
         Assertions.assertThat(price).isEqualTo(19);
     }
 

@@ -16,7 +16,7 @@ final class ProductRebater {
         this.rebates = emptyList();
     }
 
-    double applyRebates(String productName, double price) {
+    double applyRebates(ProductName productName, double price) {
         return rebates.stream()
             .filter(productRebate -> productRebate.isAllowedRebate(productName))
             .findFirst()

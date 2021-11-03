@@ -2,37 +2,34 @@ package com.sipios.refactoring.order;
 
 import java.util.Objects;
 
-public abstract class Product {
-    private final ProductName name;
+final class ProductName {
+    private final String name;
 
-    protected Product(String name) {
-        this.name = new ProductName(name);
+    ProductName(String name) {
+        this.name = name;
     }
 
-    public abstract double price();
-
-    public final ProductName name() {
+    String name() {
         return name;
     }
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
+        ProductName product = (ProductName) o;
         return Objects.equals(name, product.name);
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return Objects.hash(name);
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return "Product{" +
             "name='" + name + '\'' +
-            "price='" + price() + '\'' +
             '}';
     }
 }

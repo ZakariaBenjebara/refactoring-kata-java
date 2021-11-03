@@ -3,18 +3,22 @@ package com.sipios.refactoring.order;
 import java.util.Objects;
 
 final class ProductRebate {
-    private final String productName;
+    private final ProductName productName;
     private final double discount;
 
-    ProductRebate(String productName, double discount) {
-        this.productName = productName;
+    ProductRebate(ProductName productName, double discount) {
         if (discount > 1 || discount <= 0) {
             throw new IllegalStateException("Invalid discount value");
         }
+        this.productName = productName;
         this.discount = discount;
     }
 
-    boolean isAllowedRebate(String productName) {
+    ProductRebate(String productName, double discount) {
+        this(new ProductName(productName), discount);
+    }
+
+    boolean isAllowedRebate(ProductName productName) {
         return this.productName.equals(productName);
     }
 
