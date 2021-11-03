@@ -13,7 +13,7 @@ class ShoppingControllerTests extends UnitTest {
     @Test
     void should_not_throw() {
         Assertions.assertDoesNotThrow(
-            () -> controller.getPrice(new Body(new Item[] {}, "STANDARD_CUSTOMER"))
+            () -> controller.getPrice(new OrderRequest(new Item[] {}, "STANDARD_CUSTOMER"))
         );
     }
 }
