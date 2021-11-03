@@ -5,6 +5,7 @@ import com.sipios.refactoring.dto.OrderItem;
 import com.sipios.refactoring.dto.OrderRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -15,7 +16,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class ShoppingControllerTests extends UnitTest {
 
     private ShoppingController controller = new ShoppingController(() ->
-        LocalDate.ofInstant(Instant.now(), ZoneId.of("Europe/Paris")));
+        LocalDate.ofInstant(Instant.parse("2021-11-03T20:00:00.00Z"),
+            ZoneId.of("Europe/Paris"))
+    );
 
 
     @Test
