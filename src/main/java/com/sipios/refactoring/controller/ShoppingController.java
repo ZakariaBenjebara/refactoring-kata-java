@@ -53,7 +53,7 @@ public class ShoppingController {
         currentDate.setTime(date);
 
         // Compute discountRate for customer
-        double discountRate = computeDiscountForCustomer(orderRequest.getType());
+        double discountRate = computeDiscountForCustomer(customerType);
 
         // Compute total amount depending on the types and quantity of product and
         // if we are in winter or summer discounts periods
@@ -87,7 +87,7 @@ public class ShoppingController {
             }
         }
         try {
-            checkTotalPriceThresholdForCustomer(orderRequest.getType(), totalPrice);
+            checkTotalPriceThresholdForCustomer(customerType, totalPrice);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -95,7 +95,8 @@ public class ShoppingController {
         return String.valueOf(totalPrice);
     }
 
-    private void checkTotalPriceThresholdForCustomer(String customerType, double totalPrice) throws Exception {
+    private void checkTotalPriceThresholdForCustomer(String customerType,
+                                                     double totalPrice) throws Exception {
         if (PREMIUM_CUSTOMER_TYPE.equals(customerType)) {
             if (totalPrice > PREMIUM_CUSTOMER_MAX_PRICE_THRESHOLD) {
                 throw new Exception("Price (" + totalPrice + ") is too high for premium customer");
