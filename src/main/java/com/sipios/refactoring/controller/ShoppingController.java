@@ -46,6 +46,7 @@ public class ShoppingController {
         }
 
         double totalPrice = 0;
+        String customerType = orderRequest.getType();
 
         Date date = new Date();
         Calendar currentDate = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"));
@@ -85,30 +86,29 @@ public class ShoppingController {
                 }
             }
         }
-
         try {
-            if (orderRequest.getType().equals(STANDARD_CUSTOMER_TYPE)) {
-                if (totalPrice > STANDARD_CUSTOMER_MAX_PRICE_THRESHOLD) {
-                    throw new Exception("Price (" + totalPrice + ") is too high for standard customer");
-                }
-            } else if (orderRequest.getType().equals(PREMIUM_CUSTOMER_TYPE)) {
-                if (totalPrice > PREMIUM_CUSTOMER_MAX_PRICE_THRESHOLD) {
-                    throw new Exception("Price (" + totalPrice + ") is too high for premium customer");
-                }
-            } else if (orderRequest.getType().equals(PLATINUM_CUSTOMER_TYPE)) {
-                if (totalPrice > PLATINUM_CUSTOMER_MAX_PRICE_THRESHOLD) {
-                    throw new Exception("Price (" + totalPrice + ") is too high for platinum customer");
-                }
-            } else {
-                if (totalPrice > STANDARD_CUSTOMER_MAX_PRICE_THRESHOLD) {
-                    throw new Exception("Price (" + totalPrice + ") is too high for standard customer");
-                }
-            }
+            checkTotalPriceThresholdForCustomer(orderRequest.getType(), totalPrice);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
 
         return String.valueOf(totalPrice);
+    }
+
+    private void checkTotalPriceThresholdForCustomer(String customerType, double totalPrice) throws Exception {
+        if (PREMIUM_CUSTOMER_TYPE.equals(customerType)) {
+            if (totalPrice > PREMIUM_CUSTOMER_MAX_PRICE_THRESHOLD) {
+                throw new Exception("Price (" + totalPrice + ") is too high for premium customer");
+            }
+        } else if (PLATINUM_CUSTOMER_TYPE.equals(customerType)) {
+            if (totalPrice > PLATINUM_CUSTOMER_MAX_PRICE_THRESHOLD) {
+                throw new Exception("Price (" + totalPrice + ") is too high for platinum customer");
+            }
+        } else {
+            if (totalPrice > STANDARD_CUSTOMER_MAX_PRICE_THRESHOLD) {
+                throw new Exception("Price (" + totalPrice + ") is too high for standard customer");
+            }
+        }
     }
 
     private double computeDiscountForCustomer(String customerType) {
