@@ -1,6 +1,6 @@
 package com.sipios.refactoring.customer;
 
-final class PlatinumMembership implements CustomerMembership {
+final class PlatinumMembership implements Membership {
     static final PlatinumMembership INSTANCE = new PlatinumMembership();
 
     private PlatinumMembership() {}
@@ -8,5 +8,10 @@ final class PlatinumMembership implements CustomerMembership {
     @Override
     public double discount() {
         return 0.5;
+    }
+
+    @Override
+    public int maximumPriceThreshold() {
+        return 2000;
     }
 }

@@ -5,7 +5,7 @@ public final class CustomerMembershipFactory {
     private static final String PREMIUM_CUSTOMER_TYPE = "PREMIUM_CUSTOMER";
     private static final String PLATINUM_CUSTOMER_TYPE = "PLATINUM_CUSTOMER";
 
-    public static CustomerMembership createFrom(String customerType) {
+    public static Membership createFrom(String customerType) {
         switch (customerType) {
             case STANDARD_CUSTOMER_TYPE:
                 return StandardMembership.INSTANCE;

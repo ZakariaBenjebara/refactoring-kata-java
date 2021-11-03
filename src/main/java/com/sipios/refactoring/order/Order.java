@@ -1,6 +1,6 @@
 package com.sipios.refactoring.order;
 
-import com.sipios.refactoring.customer.CustomerMembership;
+import com.sipios.refactoring.customer.Membership;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -13,15 +13,15 @@ public final class Order {
     private static final int MINIMUM_DISCOUNT_DAY_OF_MONTH = 5;
 
     private final List<OrderItem> items;
-    private final CustomerMembership customerMembership;
+    private final Membership membership;
     private final ProductRebater productRebater;
 
     public Order(List<OrderItem> items,
-                 CustomerMembership customerMembership,
+                 Membership membership,
                  LocalDate creationDate) {
         this.items = Collections.unmodifiableList(items);
         this.productRebater = createRebatesFor(creationDate);
-        this.customerMembership = customerMembership;
+        this.membership = membership;
     }
 
     public double totalPrice() {
@@ -32,7 +32,7 @@ public final class Order {
 
     private ToDoubleFunction<OrderItem> applyDiscountToItem(ProductRebater productRebater)
     {
-        return orderItem -> orderItem.price(productRebater) * customerMembership.discount();
+        return orderItem -> orderItem.price(productRebater) * membership.discount();
     }
 
     private static ProductRebater createRebatesFor(LocalDate currentDate) {

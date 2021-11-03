@@ -1,8 +1,8 @@
 package com.sipios.refactoring.controller;
 
 import com.sipios.refactoring.UnitTest;
-import com.sipios.refactoring.dto.OrderItem;
-import com.sipios.refactoring.dto.OrderRequest;
+import com.sipios.refactoring.controller.dto.OrderItem;
+import com.sipios.refactoring.controller.dto.OrderRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +19,6 @@ class ShoppingControllerTests extends UnitTest {
         LocalDate.ofInstant(Instant.parse("2021-11-03T20:00:00.00Z"),
             ZoneId.of("Europe/Paris"))
     );
-
 
     @Test
     void should_not_throw() {

@@ -1,6 +1,7 @@
 package com.sipios.refactoring.customer;
 
-@FunctionalInterface
-public interface CustomerMembership {
+public interface Membership {
     double discount();
+
+    int maximumPriceThreshold();
 }

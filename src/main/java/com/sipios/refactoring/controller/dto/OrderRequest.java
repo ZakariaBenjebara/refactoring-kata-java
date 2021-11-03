@@ -1,4 +1,4 @@
-package com.sipios.refactoring.dto;
+package com.sipios.refactoring.controller.dto;
 
 public class OrderRequest {
 
