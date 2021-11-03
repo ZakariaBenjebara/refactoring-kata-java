@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.function.Supplier;
 
+import com.sipios.refactoring.customer.CustomerMembershipFactory;
 import com.sipios.refactoring.dto.OrderItem;
 import com.sipios.refactoring.dto.OrderRequest;
 import org.slf4j.Logger;
@@ -27,9 +28,7 @@ public class ShoppingController {
     private static final String STANDARD_CUSTOMER_TYPE = "STANDARD_CUSTOMER";
     private static final String PREMIUM_CUSTOMER_TYPE = "PREMIUM_CUSTOMER";
     private static final String PLATINUM_CUSTOMER_TYPE = "PLATINUM_CUSTOMER";
-    private static final int STANDARD_CUSTOMER_DISCOUNT_RATE = 1;
-    private static final double PREMIUM_CUSTOMER_DISCOUNT_RATE = 0.9;
-    private static final double PLATINUM_CUSTOMER_DISCOUNT_RATE = 0.5;
+
     private static final String TSHIRT_PRODUCT = "TSHIRT";
     private static final String DRESS_PRODUCT = "DRESS";
     private static final String JACKET_PRODUCT = "JACKET";
@@ -38,8 +37,6 @@ public class ShoppingController {
     private static final int PREMIUM_CUSTOMER_MAX_PRICE_THRESHOLD = 800;
     private static final int PLATINUM_CUSTOMER_MAX_PRICE_THRESHOLD = 2000;
     private static final int STANDARD_CUSTOMER_MAX_PRICE_THRESHOLD = 200;
-    private static final int JANUARY = 0;
-    private static final int JUNE = 5;
 
     private Logger LOGGER = LoggerFactory.getLogger(ShoppingController.class);
 
@@ -60,7 +57,8 @@ public class ShoppingController {
         String customerType = orderRequest.getType();
 
         // Compute discountRate for customer
-        double discountRate = computeDiscountForCustomer(customerType);
+        var customerMembership = CustomerMembershipFactory.createFrom(customerType);
+        double discountRate = customerMembership.discount();
 
         // Compute total amount depending on the types and quantity of product and
         // if we are in winter or summer discounts periods
@@ -116,19 +114,6 @@ public class ShoppingController {
             if (totalPrice > STANDARD_CUSTOMER_MAX_PRICE_THRESHOLD) {
                 throw new Exception("Price (" + totalPrice + ") is too high for standard customer");
             }
-        }
-    }
-
-    private double computeDiscountForCustomer(String customerType) {
-        switch (customerType) {
-            case STANDARD_CUSTOMER_TYPE:
-                return STANDARD_CUSTOMER_DISCOUNT_RATE;
-            case PREMIUM_CUSTOMER_TYPE:
-                return PREMIUM_CUSTOMER_DISCOUNT_RATE;
-            case PLATINUM_CUSTOMER_TYPE:
-                return PLATINUM_CUSTOMER_DISCOUNT_RATE;
-            default:
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
 
