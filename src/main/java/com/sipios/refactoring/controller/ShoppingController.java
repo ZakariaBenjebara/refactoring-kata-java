@@ -1,10 +1,12 @@
 package com.sipios.refactoring.controller;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.function.Supplier;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,8 +31,8 @@ public class ShoppingController {
     private static final String TSHIRT_PRODUCT = "TSHIRT";
     private static final String DRESS_PRODUCT = "DRESS";
     private static final String JACKET_PRODUCT = "JACKET";
-    private static final double DRESS_SUMMER_DISCOUNT = 0.8;
-    private static final double JACKET_SUMMER_DISCOUNT = 0.9;
+    private static final double DRESS_PERIOD_DISCOUNT = 0.8;
+    private static final double JACKET_PERIOD_DISCOUNT = 0.9;
     private static final int PREMIUM_CUSTOMER_MAX_PRICE_THRESHOLD = 800;
     private static final int PLATINUM_CUSTOMER_MAX_PRICE_THRESHOLD = 2000;
     private static final int STANDARD_CUSTOMER_MAX_PRICE_THRESHOLD = 200;
@@ -38,6 +40,13 @@ public class ShoppingController {
     private static final int JUNE = 5;
 
     private Logger LOGGER = LoggerFactory.getLogger(ShoppingController.class);
+
+    private final Supplier<LocalDate> nowSupplier;
+
+    @Autowired
+    public ShoppingController(Supplier<LocalDate> nowSupplier) {
+        this.nowSupplier = nowSupplier;
+    }
 
     @PostMapping
     public String getPrice(@RequestBody OrderRequest orderRequest) {
@@ -48,18 +57,14 @@ public class ShoppingController {
         double totalPrice = 0;
         String customerType = orderRequest.getType();
 
-        Date date = new Date();
-        Calendar currentDate = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"));
-        currentDate.setTime(date);
-
         // Compute discountRate for customer
         double discountRate = computeDiscountForCustomer(customerType);
 
         // Compute total amount depending on the types and quantity of product and
         // if we are in winter or summer discounts periods
         if (
-            notWithinDiscountPeriod(currentDate, JUNE)
-                && notWithinDiscountPeriod(currentDate, JANUARY)
+            notWithinDiscountPeriod(nowSupplier.get(), Month.JUNE)
+                && notWithinDiscountPeriod(nowSupplier.get(), Month.JANUARY)
         ) {
             for (int i = 0; i < orderRequest.getItems().length; i++) {
                 Item it = orderRequest.getItems()[i];
@@ -80,9 +85,9 @@ public class ShoppingController {
                 if (it.getType().equals(TSHIRT_PRODUCT)) {
                     totalPrice += TSHIRT_PRODUCT_PRICE * it.getNb() * discountRate;
                 } else if (it.getType().equals(DRESS_PRODUCT)) {
-                    totalPrice += DRESS_PRODUCT_PRICE * it.getNb() * DRESS_SUMMER_DISCOUNT * discountRate;
+                    totalPrice += DRESS_PRODUCT_PRICE * it.getNb() * DRESS_PERIOD_DISCOUNT * discountRate;
                 } else if (it.getType().equals(JACKET_PRODUCT)) {
-                    totalPrice += JACKET_PRICE_PRICE * it.getNb() * JACKET_SUMMER_DISCOUNT * discountRate;
+                    totalPrice += JACKET_PRICE_PRICE * it.getNb() * JACKET_PERIOD_DISCOUNT * discountRate;
                 }
             }
         }
@@ -125,11 +130,11 @@ public class ShoppingController {
         }
     }
 
-    private boolean notWithinDiscountPeriod(Calendar calendar, int month) {
+    private boolean notWithinDiscountPeriod(LocalDate currentDate, Month month) {
         return !(
-            calendar.get(Calendar.DAY_OF_MONTH) < 15 &&
-                calendar.get(Calendar.DAY_OF_MONTH) > 5 &&
-                calendar.get(Calendar.MONTH) == month
+            currentDate.getDayOfMonth() < 15 &&
+                currentDate.getDayOfMonth() > 5 &&
+                currentDate.getMonth() == month
         );
     }
 }
