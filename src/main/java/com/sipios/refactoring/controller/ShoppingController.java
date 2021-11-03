@@ -46,22 +46,13 @@ public class ShoppingController {
         }
 
         double totalPrice = 0;
-        double discountRate;
 
         Date date = new Date();
         Calendar currentDate = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"));
         currentDate.setTime(date);
 
         // Compute discountRate for customer
-        if (orderRequest.getType().equals(STANDARD_CUSTOMER_TYPE)) {
-            discountRate = STANDARD_CUSTOMER_DISCOUNT_RATE;
-        } else if (orderRequest.getType().equals(PREMIUM_CUSTOMER_TYPE)) {
-            discountRate = PREMIUM_CUSTOMER_DISCOUNT_RATE;
-        } else if (orderRequest.getType().equals(PLATINUM_CUSTOMER_TYPE)) {
-            discountRate = PLATINUM_CUSTOMER_DISCOUNT_RATE;
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
+        double discountRate = computeDiscountForCustomer(orderRequest.getType());
 
         // Compute total amount depending on the types and quantity of product and
         // if we are in winter or summer discounts periods
@@ -118,6 +109,19 @@ public class ShoppingController {
         }
 
         return String.valueOf(totalPrice);
+    }
+
+    private double computeDiscountForCustomer(String customerType) {
+        switch (customerType) {
+            case STANDARD_CUSTOMER_TYPE:
+                return STANDARD_CUSTOMER_DISCOUNT_RATE;
+            case PREMIUM_CUSTOMER_TYPE:
+                return PREMIUM_CUSTOMER_DISCOUNT_RATE;
+            case PLATINUM_CUSTOMER_TYPE:
+                return PLATINUM_CUSTOMER_DISCOUNT_RATE;
+            default:
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
     }
 
     private boolean notWithinDiscountPeriod(Calendar calendar, int month) {
