@@ -11,9 +11,9 @@ public final class OrderItem {
         this.quantity = quantity;
     }
 
-    double price(ProductRebater productRebater) {
-        return productRebater.applyRebates(product.name(),
-            product.price() * quantity);
+    double calculatePrice(ProductRebater productRebater) {
+        double totalPrice = product.price() * quantity;
+        return productRebater.applyRebates(product.name(), totalPrice);
     }
 
     @Override

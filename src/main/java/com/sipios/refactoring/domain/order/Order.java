@@ -33,7 +33,7 @@ public final class Order {
 
     private ToDoubleFunction<OrderItem> applyDiscountToItem(ProductRebater productRebater)
     {
-        return orderItem -> orderItem.price(productRebater) * membership.discount();
+        return orderItem -> orderItem.calculatePrice(productRebater) * membership.discount();
     }
 
     private static ProductRebater createRebatesFor(LocalDate currentDate,
