@@ -1,0 +1,6 @@
+com/sipios/refactoring/UnitTest.class
+com/sipios/refactoring/domain/customer/MembershipTests.class
+com/sipios/refactoring/domain/order/OrderTests.class
+com/sipios/refactoring/controller/ShoppingControllerTests.class
+com/sipios/refactoring/RefactoringApplicationTests.class
+com/sipios/refactoring/domain/order/ProductRebaterTests.class

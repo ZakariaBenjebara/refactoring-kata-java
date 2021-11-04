@@ -3,22 +3,29 @@ package com.sipios.refactoring.controller;
 import com.sipios.refactoring.UnitTest;
 import com.sipios.refactoring.controller.dto.OrderItem;
 import com.sipios.refactoring.controller.dto.OrderRequest;
+import com.sipios.refactoring.domain.order.ProductRebate;
+import com.sipios.refactoring.service.ShoppingService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ShoppingControllerTests extends UnitTest {
 
-    private ShoppingController controller = new ShoppingController(() ->
-        LocalDate.ofInstant(Instant.parse("2021-11-03T20:00:00.00Z"),
-            ZoneId.of("Europe/Paris"))
+    private static final List<ProductRebate> REBATES = List.of(
+        new ProductRebate("JACKET", 0.9),
+        new ProductRebate("DRESS", 0.8)
     );
+
+    private ShoppingController controller = new ShoppingController(new ShoppingService(() ->
+        LocalDate.ofInstant(Instant.parse("2021-11-03T20:00:00.00Z"),
+            ZoneId.of("Europe/Paris")), REBATES));
 
     @Test
     void should_not_throw() {
@@ -101,9 +108,10 @@ class ShoppingControllerTests extends UnitTest {
 
     @Test
     void shouldApplyWinterDiscountJACKETPriceForPlatinumCustomer() {
-        controller = new ShoppingController(() ->
+        controller = new ShoppingController(new ShoppingService(
+            () ->
             LocalDate.ofInstant(Instant.parse("2021-01-09T20:00:00.00Z"),
-                ZoneId.of("Europe/Paris")));
+                ZoneId.of("Europe/Paris")), REBATES));
         String price = controller.getPrice(new OrderRequest(new OrderItem[]
             {
                 new OrderItem("JACKET", 15),
@@ -115,9 +123,9 @@ class ShoppingControllerTests extends UnitTest {
 
     @Test
     void shouldApplySummerDiscountJACKETPriceForStandardCustomer() {
-        controller = new ShoppingController(() ->
+        controller = new ShoppingController(new ShoppingService(() ->
             LocalDate.ofInstant(Instant.parse("2021-06-09T20:00:00.00Z"),
-                ZoneId.of("Europe/Paris")));
+                ZoneId.of("Europe/Paris")), REBATES));
         String price = controller.getPrice(new OrderRequest(new OrderItem[]
             {
                 new OrderItem("TSHIRT", 2),
@@ -134,7 +142,7 @@ class ShoppingControllerTests extends UnitTest {
                 {new OrderItem("JACKET", 8)
                 },
             "STANDARD_CUSTOMER")));
-        assertEquals("400 BAD_REQUEST \"Price (800.0) is too high for standard customer\"", exception.getMessage());
+        assertEquals("Price (800.0) is too high for standard customer", exception.getMessage());
     }
 
     @Test
@@ -145,7 +153,7 @@ class ShoppingControllerTests extends UnitTest {
                 new OrderItem("TSHIRT", 6)
             },
             "PREMIUM_CUSTOMER")));
-        assertEquals("400 BAD_REQUEST \"Price (1017.0) is too high for premium customer\"", exception.getMessage());
+        assertEquals("Price (1017.0) is too high for premium customer", exception.getMessage());
     }
 
     @Test
@@ -156,6 +164,6 @@ class ShoppingControllerTests extends UnitTest {
                 new OrderItem("TSHIRT", 25)
             },
             "PLATINUM_CUSTOMER")));
-        assertEquals("400 BAD_REQUEST \"Price (2300.0) is too high for platinum customer\"", exception.getMessage());
+        assertEquals("Price (2300.0) is too high for platinum customer", exception.getMessage());
     }
 }
